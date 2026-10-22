@@ -1,0 +1,8 @@
+node_modules
+
+# Variáveis de ambiente (senha do banco) ficam fora do Git
+.env
+!.env.example
+
+# Client gerado pelo Prisma (recriado com `npx prisma generate`)
+/generated/prisma
