@@ -1,0 +1,103 @@
+// Schema do banco do Health Check Proativo de PDVs.
+// A URL de conexão não fica aqui: no Prisma 7 ela vem do prisma.config.js (que lê o .env).
+
+// "prisma-client-js" gera o client em JavaScript. O gerador novo ("prisma-client")
+// gera arquivos TypeScript, e este projeto não usa TS.
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Enums — valores fixos aceitos em cada coluna de status
+// ---------------------------------------------------------------------------
+
+// Situação do serviço do sistema de vendas na PDV
+enum StatusServico {
+  RODANDO
+  PARADO
+  NAO_ENCONTRADO
+
+  @@map("status_servico")
+}
+
+// Situação da impressora fiscal ligada à PDV
+enum StatusImpressora {
+  OK
+  ERRO
+  OFFLINE
+  NAO_ENCONTRADA
+
+  @@map("status_impressora")
+}
+
+// Status geral da máquina no "semáforo" do painel (calculado pelo backend ao receber)
+enum StatusGeral {
+  NORMAL
+  ATENCAO
+  CRITICO
+
+  @@map("status_geral")
+}
+
+// ---------------------------------------------------------------------------
+// Tabelas
+// ---------------------------------------------------------------------------
+
+model Loja {
+  id           Int      @id @default(autoincrement())
+  codigo       String   @unique @db.VarChar(3) // "001" — texto para manter o zero à esquerda
+  nome         String   @db.VarChar(100)
+  // Hash (SHA-256) da chave de API da loja. Nunca guardamos a chave em texto puro.
+  // Opcional porque a loja pode ser cadastrada antes de a chave ser gerada.
+  chaveApiHash String?  @unique @map("chave_api_hash") @db.VarChar(64)
+  ativa        Boolean  @default(true)
+  criadoEm     DateTime @default(now()) @map("criado_em") @db.Timestamptz(3)
+  atualizadoEm DateTime @updatedAt @map("atualizado_em") @db.Timestamptz(3)
+
+  maquinas Maquina[]
+
+  @@map("lojas")
+}
+
+model Maquina {
+  id            Int       @id @default(autoincrement())
+  hostname      String    @unique @db.VarChar(20) // "L001-CX01" — é assim que a PDV se identifica
+  numeroCaixa   Int       @map("numero_caixa")
+  ip            String?   @db.VarChar(15) // último IP informado pela PDV
+  lojaId        Int       @map("loja_id")
+  ultimoContato DateTime? @map("ultimo_contato") @db.Timestamptz(3) // detecta PDV "sumida"
+  ativa         Boolean   @default(true)
+  criadoEm      DateTime  @default(now()) @map("criado_em") @db.Timestamptz(3)
+  atualizadoEm  DateTime  @updatedAt @map("atualizado_em") @db.Timestamptz(3)
+
+  loja         Loja          @relation(fields: [lojaId], references: [id])
+  healthChecks HealthCheck[]
+
+  @@unique([lojaId, numeroCaixa]) // não existem dois "CX01" na mesma loja
+  @@map("maquinas")
+}
+
+// Um registro por envio da PDV
+model HealthCheck {
+  id               Int              @id @default(autoincrement())
+  maquinaId        Int              @map("maquina_id")
+  coletadoEm       DateTime         @map("coletado_em") @db.Timestamptz(3) // horário da PDV
+  recebidoEm       DateTime         @default(now()) @map("recebido_em") @db.Timestamptz(3) // horário do servidor
+  discoTotalGb     Float            @map("disco_total_gb") // só o drive C:
+  discoLivreGb     Float            @map("disco_livre_gb")
+  cpuUso           Float            @map("cpu_uso") // percentual, 0 a 100
+  memoriaUso       Float            @map("memoria_uso") // percentual, 0 a 100
+  servicoVendas    StatusServico    @map("servico_vendas")
+  impressoraFiscal StatusImpressora @map("impressora_fiscal")
+  status           StatusGeral
+
+  maquina Maquina @relation(fields: [maquinaId], references: [id])
+
+  @@index([maquinaId, coletadoEm(sort: Desc)]) // histórico de uma máquina, do mais recente para o mais antigo
+  @@map("health_checks")
+}
