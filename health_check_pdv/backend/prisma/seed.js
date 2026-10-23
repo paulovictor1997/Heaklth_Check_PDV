@@ -11,7 +11,7 @@ const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
 });
 
-const lojas = [
+const stores = [
   { codigo: "001", nome: "Matriz" },
   { codigo: "005", nome: "Moreira Lima" },
   { codigo: "006", nome: "Maceió Shopping" },
@@ -31,22 +31,22 @@ const lojas = [
 ];
 
 async function main() {
-  for (const loja of lojas) {
+  for (const store of stores) {
     await prisma.loja.upsert({
-      where: { codigo: loja.codigo },
-      update: { nome: loja.nome },
-      create: loja,
+      where: { codigo: store.codigo },
+      update: { nome: store.nome },
+      create: store,
     });
   }
 
   const total = await prisma.loja.count();
-  console.log(`Seed concluído: ${lojas.length} lojas processadas, ${total} no banco.`);
+  console.log(`Seed concluído: ${stores.length} lojas processadas, ${total} no banco.`);
 }
 
 try {
   await main();
-} catch (erro) {
-  console.error("Erro ao rodar o seed:", erro);
+} catch (error) {
+  console.error("Erro ao rodar o seed:", error);
   process.exitCode = 1;
 } finally {
   await prisma.$disconnect();
