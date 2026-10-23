@@ -98,3 +98,74 @@ Sem autenticação nesta fase (uso interno da equipe de TI). Login fica como mel
 | `GET /api/lojas/:codigo` | Dados da loja e suas máquinas, cada uma com o último health check e a situação atual |
 | `GET /api/maquinas/:hostname/historico?horas=24` | Registros da máquina nas últimas N horas (padrão 24), do mais recente para o mais antigo |
 | `GET /status` | Se o servidor e o banco estão no ar (para monitoramento) |
+
+### Situação das máquinas e das lojas
+
+- **Situação da máquina:** o `status` do último health check (`NORMAL`, `ATENCAO`, `CRITICO`), ou `SEM_CONTATO` se o último envio foi há mais de 10 minutos.
+- **Situação da loja:** a pior situação entre as suas máquinas ativas, nesta ordem (da melhor para a pior): `NORMAL` → `ATENCAO` → `SEM_CONTATO` → `CRITICO`. `CRITICO` é a pior porque é um problema confirmado; sem contato pode ser só a PDV desligada.
+- **Loja sem máquinas:** `situacao` é `null`.
+- Os `motivos` não são gravados: nas consultas eles são recalculados a partir dos números do registro.
+
+### Exemplos de resposta
+
+`GET /api/lojas`
+
+```json
+[
+  {
+    "codigo": "005",
+    "nome": "Moreira Lima",
+    "totalMaquinas": 3,
+    "situacoes": { "NORMAL": 1, "ATENCAO": 0, "SEM_CONTATO": 1, "CRITICO": 1 },
+    "situacao": "CRITICO"
+  }
+]
+```
+
+`GET /api/lojas/:codigo` — mesmos campos do resumo, mais a lista de máquinas (ordenadas pelo número do caixa). `404` se a loja não existe ou está inativa.
+
+```json
+{
+  "codigo": "005",
+  "nome": "Moreira Lima",
+  "totalMaquinas": 1,
+  "situacoes": { "NORMAL": 0, "ATENCAO": 0, "SEM_CONTATO": 0, "CRITICO": 1 },
+  "situacao": "CRITICO",
+  "maquinas": [
+    {
+      "hostname": "L005-CX02",
+      "numeroCaixa": 2,
+      "ip": "10.0.0.2",
+      "ultimoContato": "2026-10-23T14:41:13.821Z",
+      "situacao": "CRITICO",
+      "ultimoHealthCheck": {
+        "id": 3,
+        "coletadoEm": "2026-10-23T14:41:13.303Z",
+        "recebidoEm": "2026-10-23T14:41:13.821Z",
+        "discoTotalGb": 100,
+        "discoLivreGb": 50,
+        "cpuUso": 20,
+        "memoriaUso": 50,
+        "servicoVendas": "PARADO",
+        "impressoraFiscal": "OK",
+        "status": "CRITICO",
+        "motivos": ["Serviço de vendas parado"]
+      }
+    }
+  ]
+}
+```
+
+`GET /api/maquinas/:hostname/historico?horas=24` — `horas` de 1 a 720 (30 dias), padrão 24. O filtro usa o `coletadoEm`. `400` se `horas` for inválido, `404` se a máquina não existe.
+
+```json
+{
+  "hostname": "L005-CX01",
+  "loja": { "codigo": "005", "nome": "Moreira Lima" },
+  "horas": 24,
+  "total": 1,
+  "registros": [ { "id": 2, "coletadoEm": "...", "status": "NORMAL", "motivos": [], "...": "mesmos campos de ultimoHealthCheck" } ]
+}
+```
+
+Datas nas respostas saem em UTC (ISO 8601 com `Z`); o painel converte para o horário local.
