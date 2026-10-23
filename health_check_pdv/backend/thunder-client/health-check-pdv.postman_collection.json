@@ -1,0 +1,610 @@
+{
+  "info": {
+    "_postman_id": "7c33b3c6-4aa6-4354-8f99-9952d1e17d9a",
+    "name": "Health Check PDV",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Sistema",
+      "item": [
+        {
+          "name": "Status do servidor e do banco",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "status"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"json.banco = ok\", () => pm.expect(pm.response.json().banco).to.equal(\"ok\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Envio da PDV",
+      "item": [
+        {
+          "name": "Envio normal (L001-CX01)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/health-checks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "health-checks"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hostname\": \"L001-CX01\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"RODANDO\",\n  \"impressoraFiscal\": \"OK\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.expect(pm.response.code).to.equal(201));",
+                  "pm.test(\"json.status = NORMAL\", () => pm.expect(pm.response.json().status).to.equal(\"NORMAL\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Atenção: disco com 10% livre",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/health-checks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "health-checks"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hostname\": \"L001-CX01\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 23.8,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"RODANDO\",\n  \"impressoraFiscal\": \"OK\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.expect(pm.response.code).to.equal(201));",
+                  "pm.test(\"json.status = ATENCAO\", () => pm.expect(pm.response.json().status).to.equal(\"ATENCAO\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crítico: serviço parado e impressora offline",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/health-checks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "health-checks"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hostname\": \"L001-CX01\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"PARADO\",\n  \"impressoraFiscal\": \"OFFLINE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.expect(pm.response.code).to.equal(201));",
+                  "pm.test(\"json.status = CRITICO\", () => pm.expect(pm.response.json().status).to.equal(\"CRITICO\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Nova máquina (L001-CX02, cadastro automático)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/health-checks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "health-checks"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hostname\": \"L001-CX02\",\n  \"ip\": \"192.168.1.112\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"RODANDO\",\n  \"impressoraFiscal\": \"OK\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.expect(pm.response.code).to.equal(201));",
+                  "pm.test(\"json.status = NORMAL\", () => pm.expect(pm.response.json().status).to.equal(\"NORMAL\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Erro 400: dados inválidos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/health-checks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "health-checks"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hostname\": \"CAIXA-1\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 150,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"LIGADO\",\n  \"impressoraFiscal\": \"OK\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.expect(pm.response.code).to.equal(400));",
+                  "pm.test(\"json.erro = Dados inválidos\", () => pm.expect(pm.response.json().erro).to.equal(\"Dados inválidos\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Erro 403: hostname de outra loja",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/health-checks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "health-checks"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hostname\": \"L005-CX01\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"RODANDO\",\n  \"impressoraFiscal\": \"OK\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 403\", () => pm.expect(pm.response.code).to.equal(403));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Erro 401: sem chave de API",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/health-checks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "health-checks"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hostname\": \"L001-CX01\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"RODANDO\",\n  \"impressoraFiscal\": \"OK\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 401\", () => pm.expect(pm.response.code).to.equal(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Erro 400: JSON malformado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/health-checks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "health-checks"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hostname\": \"L001-CX01\",\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.expect(pm.response.code).to.equal(400));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. Painel",
+      "item": [
+        {
+          "name": "Lista de lojas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/lojas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "lojas"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"json[0].codigo = 001\", () => pm.expect(pm.response.json()[0].codigo).to.equal(\"001\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Detalhe da loja 001",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/lojas/001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "lojas",
+                "001"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"json.codigo = 001\", () => pm.expect(pm.response.json().codigo).to.equal(\"001\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Histórico da L001-CX01 (24 h)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/maquinas/L001-CX01/historico?horas=24",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "maquinas",
+                "L001-CX01",
+                "historico"
+              ],
+              "query": [
+                {
+                  "key": "horas",
+                  "value": "24"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.expect(pm.response.code).to.equal(200));",
+                  "pm.test(\"json.hostname = L001-CX01\", () => pm.expect(pm.response.json().hostname).to.equal(\"L001-CX01\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Erro 404: loja inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/lojas/999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "lojas",
+                "999"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 404\", () => pm.expect(pm.response.code).to.equal(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Erro 400: horas inválido no histórico",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/maquinas/L001-CX01/historico?horas=abc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "maquinas",
+                "L001-CX01",
+                "historico"
+              ],
+              "query": [
+                {
+                  "key": "horas",
+                  "value": "abc"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 400\", () => pm.expect(pm.response.code).to.equal(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Erro 404: rota inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/rota-que-nao-existe",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "rota-que-nao-existe"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 404\", () => pm.expect(pm.response.code).to.equal(404));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

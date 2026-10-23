@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
-    "api-key": "node scripts/generate-api-key.js"
+    "api-key": "node scripts/generate-api-key.js",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",
