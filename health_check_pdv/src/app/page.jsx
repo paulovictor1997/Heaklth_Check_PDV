@@ -1,29 +1,40 @@
-import StatusBadge from "@/components/StatusBadge";
+import SituationCounts from "@/components/SituationCounts";
+import StoreCard from "@/components/StoreCard";
 import { getStores } from "@/lib/api";
+import { pluralize } from "@/lib/format";
+import { SITUATIONS } from "@/lib/situations";
 
-// Página provisória: a visão geral com os cards das lojas entra na Parte 3.
-// Por enquanto ela mostra os selos de situação e testa a conexão com a API.
-const situations = ["NORMAL", "ATENCAO", "CRITICO", "SEM_CONTATO", null];
-
+// Visão geral: um card por loja ativa, na ordem do código (como vem da API).
+// Se a API falhar, o erro sobe para o Next.js — a tela de erro própria é a Parte 6.
 export default async function Home() {
-  // try/catch só nesta página de teste; o tratamento de erro definitivo é a Parte 6
-  let apiMessage;
+  const stores = await getStores();
 
-  try {
-    const stores = await getStores();
-    apiMessage = `API conectada: ${stores.length} lojas ativas.`;
-  } catch (error) {
-    apiMessage = `Erro ao consultar a API: ${error.message}`;
-  }
+  // Soma as máquinas de todas as lojas, por situação, para o resumo do topo
+  const totalMachines = stores.reduce((sum, store) => sum + store.totalMaquinas, 0);
+  const totalCounts = Object.fromEntries(
+    Object.keys(SITUATIONS).map((key) => [
+      key,
+      stores.reduce((sum, store) => sum + store.situacoes[key], 0),
+    ])
+  );
 
   return (
-    <section className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">Visão geral</h1>
-      <p className="text-texto/70">{apiMessage}</p>
-      <ul className="flex flex-wrap gap-3">
-        {situations.map((situation) => (
-          <li key={situation ?? "SEM_MAQUINAS"}>
-            <StatusBadge situation={situation} />
+    <section className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-2xl font-bold">Visão geral</h1>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-texto/70">
+          <span>
+            {pluralize(stores.length, "loja", "lojas")} ·{" "}
+            {pluralize(totalMachines, "máquina", "máquinas")}
+          </span>
+          <SituationCounts counts={totalCounts} />
+        </div>
+      </div>
+
+      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {stores.map((store) => (
+          <li key={store.codigo} className="flex">
+            <StoreCard store={store} />
           </li>
         ))}
       </ul>

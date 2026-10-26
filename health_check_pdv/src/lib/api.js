@@ -4,10 +4,16 @@
 // com a API nem conhece o API_URL. Se algum componente "use client" importar este
 // arquivo, o build falha por causa da linha abaixo.
 import "server-only";
+import { connection } from "next/server";
 
 // Faz o GET e devolve o JSON. Retorna null quando a API responde 404, para a página
 // decidir o que fazer (normalmente chamar notFound()). Outros erros viram exceção.
 async function request(path) {
+  // Os dados mudam a todo momento: a página nunca é gerada no build, só quando alguém
+  // a abre. Precisa ficar fora do try/catch abaixo — no build o Next lança um erro
+  // interno aqui de propósito, e o catch o confundiria com a API fora do ar.
+  await connection();
+
   const baseUrl = process.env.API_URL;
 
   if (!baseUrl) {
