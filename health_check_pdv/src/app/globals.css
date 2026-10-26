@@ -1,26 +1,27 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * Paleta do painel (README §6.1). Tema escuro fixo — não há modo claro.
+ * Cada cor vira um utilitário do Tailwind: bg-fundo, text-texto,
+ * text-critico, bg-normal/20, border-destaque, etc.
+ */
+@theme {
+  --color-fundo: #0a0307;
+  --color-texto: #ebebeb;
+  --color-critico: #e60925;
+  --color-normal: #2e826d;
+  --color-atencao: #d9a62e;
+  --color-destaque: #3e8fb0;
+
+  /* Variável criada pelo next/font no layout.js */
+  --font-sans: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-fundo);
+  color: var(--color-texto);
 }
