@@ -5,9 +5,20 @@ import { pluralize } from "@/lib/format";
 import { SITUATIONS } from "@/lib/situations";
 
 // Visão geral: um card por loja ativa, na ordem do código (como vem da API).
-// Se a API falhar, o erro sobe para o Next.js — a tela de erro própria é a Parte 6.
+// Se a API falhar, o erro sobe para o Next.js, que mostra o app/error.jsx.
 export default async function Home() {
   const stores = await getStores();
+
+  if (stores.length === 0) {
+    return (
+      <section className="flex flex-col gap-4">
+        <h1 className="text-2xl font-bold">Visão geral</h1>
+        <p className="rounded-lg border border-texto/10 p-6 text-texto/70">
+          Nenhuma loja ativa cadastrada.
+        </p>
+      </section>
+    );
+  }
 
   // Soma as máquinas de todas as lojas, por situação, para o resumo do topo
   const totalMachines = stores.reduce((sum, store) => sum + store.totalMaquinas, 0);

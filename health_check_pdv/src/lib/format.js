@@ -14,7 +14,14 @@ const dateTimeFormat = new Intl.DateTimeFormat("pt-BR", {
   minute: "2-digit",
 });
 
-const relativeTimeFormat = new Intl.RelativeTimeFormat("pt-BR", { numeric: "auto" });
+const timeFormat = new Intl.DateTimeFormat("pt-BR", {
+  timeZone: TIME_ZONE,
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+});
+
+const relativeTimeFormat =new Intl.RelativeTimeFormat("pt-BR", { numeric: "auto" });
 
 // pluralize(1, "máquina", "máquinas") → "1 máquina"; pluralize(3, ...) → "3 máquinas"
 export function pluralize(count, singular, plural) {
@@ -34,6 +41,11 @@ export function formatPercent(value) {
 // "2026-10-26T14:14:10.039Z" → "26/10, 11:14"
 export function formatDateTime(isoDate) {
   return dateTimeFormat.format(new Date(isoDate));
+}
+
+// Date → "11:42:10"
+export function formatTime(date) {
+  return timeFormat.format(date);
 }
 
 // Tempo desde a data até `now`: "agora", "há 3 minutos", "há 2 horas", "há 5 dias"
