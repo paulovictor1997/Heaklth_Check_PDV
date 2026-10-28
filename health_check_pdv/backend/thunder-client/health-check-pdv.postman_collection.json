@@ -136,7 +136,7 @@
           ]
         },
         {
-          "name": "Crítico: serviço parado e impressora offline",
+          "name": "Crítico: sistema fechado e impressora offline",
           "request": {
             "method": "POST",
             "header": [

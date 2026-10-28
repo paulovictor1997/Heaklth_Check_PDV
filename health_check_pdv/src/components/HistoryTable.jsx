@@ -10,7 +10,7 @@ import {
 // página. 288 = um dia inteiro de envios a cada 5 minutos.
 const MAX_ROWS = 288;
 
-const COLUMNS = ["Coletado em", "Status", "Disco C: livre", "CPU", "Memória", "Serviço de vendas", "Impressora fiscal"];
+const COLUMNS = ["Coletado em", "Status", "Disco C: livre", "CPU", "Memória", "Sistema de vendas", "Impressora fiscal"];
 
 // Os registros em tabela, fechada por padrão (<details>): é a versão em texto dos
 // gráficos, com os valores exatos. `records` vem da API, do mais recente ao mais antigo.

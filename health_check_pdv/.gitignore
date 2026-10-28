@@ -34,6 +34,10 @@ yarn-error.log*
 .env*
 !.env.example
 
+# script do PDV: o config.json tem a chave real da loja e os logs são da máquina
+/scripts/config.json
+/scripts/logs/
+
 # vercel
 .vercel
 

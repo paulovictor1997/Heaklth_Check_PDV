@@ -74,7 +74,7 @@ export function formatTimeAgo(isoDate, now) {
 // Valores dos enums do contrato (seção 1) em texto para a tela
 export const SALES_SERVICE_LABELS = {
   RODANDO: "Rodando",
-  PARADO: "Parado",
+  PARADO: "Fechado",
   NAO_ENCONTRADO: "Não encontrado",
 };
 

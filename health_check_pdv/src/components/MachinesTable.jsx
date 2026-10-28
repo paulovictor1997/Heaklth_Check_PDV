@@ -15,7 +15,7 @@ const COLUMNS = [
   "Disco C:",
   "CPU",
   "Memória",
-  "Serviço de vendas",
+  "Sistema de vendas",
   "Impressora fiscal",
   "Último contato",
 ];

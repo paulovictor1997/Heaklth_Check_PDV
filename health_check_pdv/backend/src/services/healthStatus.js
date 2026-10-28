@@ -9,7 +9,7 @@ const SEVERITY = [StatusGeral.NORMAL, StatusGeral.ATENCAO, StatusGeral.CRITICO];
 
 // Textos usados nos motivos (o valor do enum vira algo legível no painel)
 const SALES_SERVICE_TEXT = {
-  PARADO: "parado",
+  PARADO: "fechado",
   NAO_ENCONTRADO: "não encontrado",
 };
 
@@ -44,11 +44,12 @@ export function computeHealthStatus(data) {
     findings.push({ status: StatusGeral.ATENCAO, reason: `Memória em ${formatPercent(data.memoriaUso)}% de uso` });
   }
 
-  // Sem o serviço de vendas o caixa não vende
+  // Sistema de vendas (.exe): fechado pode ser só o caixa sem uso, então é atenção;
+  // não encontrado no caminho configurado é problema de instalação, então é crítico
   if (data.servicoVendas !== "RODANDO") {
     findings.push({
-      status: StatusGeral.CRITICO,
-      reason: `Serviço de vendas ${SALES_SERVICE_TEXT[data.servicoVendas]}`,
+      status: data.servicoVendas === "PARADO" ? StatusGeral.ATENCAO : StatusGeral.CRITICO,
+      reason: `Sistema de vendas ${SALES_SERVICE_TEXT[data.servicoVendas]}`,
     });
   }
 

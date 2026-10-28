@@ -1,0 +1,7 @@
+{
+  "urlApi": "http://localhost:3001",
+  "chaveApi": "COLE_AQUI_A_CHAVE_DA_LOJA",
+  "caminhoSistemaVendas": "C:\\SETA\\NOME_DO_SISTEMA.exe",
+  "padroesImpressora": ["*TM-T20*", "*Bematech*"],
+  "timeoutSegundos": 15
+}
