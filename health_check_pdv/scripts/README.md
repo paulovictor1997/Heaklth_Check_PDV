@@ -19,7 +19,7 @@ Ele **só lê** informações: não abre, fecha nem altera nada no PDV.
 3. **Preencher o `config.json`** (o mesmo para todos os caixas da loja):
    - `urlApi`: endereço da API (em produção, `https://...`)
    - `chaveApi`: chave **da loja** (começa com `hcpdv_`), gerada no backend
-   - `caminhoSistemaVendas`: caminho do `.exe` do sistema de vendas, com barras duplas (`C:\\SETA\\...exe`)
+   - `caminhoSistemaVendas`: caminho do `.exe` do sistema de vendas, igual em todas as lojas: `C:\\SETA\\Seta.exe` (barras duplas)
    - `padroesImpressora`: parte do nome da impressora fiscal no Windows (`*TM-T20*`, `*Bematech*`)
 4. **Instalar a tarefa**: abrir o PowerShell com o botão direito > **Executar como administrador** e rodar:
    ```powershell
