@@ -66,7 +66,6 @@ healthChecksRouter.post("/", requireApiKey, async (req, res) => {
         cpuUso: data.cpuUso,
         memoriaUso: data.memoriaUso,
         servicoVendas: data.servicoVendas,
-        impressoraFiscal: data.impressoraFiscal,
         status,
       },
     });

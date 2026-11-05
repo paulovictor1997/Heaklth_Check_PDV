@@ -67,7 +67,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"hostname\": \"L001-CX01\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"RODANDO\",\n  \"impressoraFiscal\": \"OK\"\n}",
+              "raw": "{\n  \"hostname\": \"L001-CX01\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"RODANDO\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -114,7 +114,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"hostname\": \"L001-CX01\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 23.8,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"RODANDO\",\n  \"impressoraFiscal\": \"OK\"\n}",
+              "raw": "{\n  \"hostname\": \"L001-CX01\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 23.8,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"RODANDO\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -136,7 +136,7 @@
           ]
         },
         {
-          "name": "Crítico: sistema fechado e impressora offline",
+          "name": "Crítico: sistema de vendas não encontrado",
           "request": {
             "method": "POST",
             "header": [
@@ -161,7 +161,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"hostname\": \"L001-CX01\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"PARADO\",\n  \"impressoraFiscal\": \"OFFLINE\"\n}",
+              "raw": "{\n  \"hostname\": \"L001-CX01\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"NAO_ENCONTRADO\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -208,7 +208,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"hostname\": \"L001-CX02\",\n  \"ip\": \"192.168.1.112\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"RODANDO\",\n  \"impressoraFiscal\": \"OK\"\n}",
+              "raw": "{\n  \"hostname\": \"L001-CX02\",\n  \"ip\": \"192.168.1.112\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"RODANDO\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -255,7 +255,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"hostname\": \"CAIXA-1\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 150,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"LIGADO\",\n  \"impressoraFiscal\": \"OK\"\n}",
+              "raw": "{\n  \"hostname\": \"CAIXA-1\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 150,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"LIGADO\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -302,7 +302,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"hostname\": \"L005-CX01\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"RODANDO\",\n  \"impressoraFiscal\": \"OK\"\n}",
+              "raw": "{\n  \"hostname\": \"L005-CX01\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"RODANDO\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -344,7 +344,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"hostname\": \"L001-CX01\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"RODANDO\",\n  \"impressoraFiscal\": \"OK\"\n}",
+              "raw": "{\n  \"hostname\": \"L001-CX01\",\n  \"ip\": \"192.168.1.111\",\n  \"coletadoEm\": \"{{#dateISO}}\",\n  \"discoTotalGb\": 237.9,\n  \"discoLivreGb\": 45.3,\n  \"cpuUso\": 23.5,\n  \"memoriaUso\": 61.2,\n  \"servicoVendas\": \"RODANDO\"\n}",
               "options": {
                 "raw": {
                   "language": "json"

@@ -1,6 +1,5 @@
 import StatusBadge from "@/components/StatusBadge";
 import {
-  PRINTER_LABELS,
   SALES_SERVICE_LABELS,
   formatDateTime,
   formatPercent,
@@ -10,7 +9,7 @@ import {
 // página. 288 = um dia inteiro de envios a cada 5 minutos.
 const MAX_ROWS = 288;
 
-const COLUMNS = ["Coletado em", "Status", "Disco C: livre", "CPU", "Memória", "Sistema de vendas", "Impressora fiscal"];
+const COLUMNS = ["Coletado em", "Status", "Disco C: livre", "CPU", "Memória", "Sistema de vendas"];
 
 // Os registros em tabela, fechada por padrão (<details>): é a versão em texto dos
 // gráficos, com os valores exatos. `records` vem da API, do mais recente ao mais antigo.
@@ -54,9 +53,6 @@ export default function HistoryTable({ records }) {
                 <td className="px-4 py-2 whitespace-nowrap">{formatPercent(record.memoriaUso)}</td>
                 <td className="px-4 py-2 whitespace-nowrap">
                   {SALES_SERVICE_LABELS[record.servicoVendas]}
-                </td>
-                <td className="px-4 py-2 whitespace-nowrap">
-                  {PRINTER_LABELS[record.impressoraFiscal]}
                 </td>
               </tr>
             ))}

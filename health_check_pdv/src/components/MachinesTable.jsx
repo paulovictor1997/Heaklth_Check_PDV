@@ -1,7 +1,6 @@
 import Link from "next/link";
 import StatusBadge from "@/components/StatusBadge";
 import {
-  PRINTER_LABELS,
   SALES_SERVICE_LABELS,
   formatDateTime,
   formatNumber,
@@ -16,7 +15,6 @@ const COLUMNS = [
   "CPU",
   "Memória",
   "Sistema de vendas",
-  "Impressora fiscal",
   "Último contato",
 ];
 
@@ -87,13 +85,10 @@ function MachineRow({ machine, now }) {
           <td className="px-4 py-3 whitespace-nowrap">
             {SALES_SERVICE_LABELS[healthCheck.servicoVendas]}
           </td>
-          <td className="px-4 py-3 whitespace-nowrap">
-            {PRINTER_LABELS[healthCheck.impressoraFiscal]}
-          </td>
         </>
       ) : (
-        // Máquina cadastrada que ainda não tem nenhum registro
-        <td colSpan={5} className="px-4 py-3 text-texto/60">
+        // Máquina cadastrada que ainda não tem nenhum registro (ocupa as 4 colunas de dados)
+        <td colSpan={4}className="px-4 py-3 text-texto/60">
           Nenhum registro recebido
         </td>
       )}

@@ -25,8 +25,7 @@ Qualquer mudança aqui deve ser combinada antes de alterar o código.
   "discoLivreGb": 45.3,
   "cpuUso": 23.5,
   "memoriaUso": 61.2,
-  "servicoVendas": "RODANDO",
-  "impressoraFiscal": "OK"
+  "servicoVendas": "RODANDO"
 }
 ```
 
@@ -40,7 +39,6 @@ Qualquer mudança aqui deve ser combinada antes de alterar o código.
 | `cpuUso` | número | Obrigatório. Percentual de 0 a 100 |
 | `memoriaUso` | número | Obrigatório. Percentual de 0 a 100 |
 | `servicoVendas` | texto | Obrigatório. Situação do sistema de vendas (um `.exe`, não um serviço do Windows): `RODANDO` (processo aberto), `PARADO` (fechado) ou `NAO_ENCONTRADO` (o `.exe` não existe no caminho configurado) |
-| `impressoraFiscal` | texto | Obrigatório. `OK`, `ERRO`, `OFFLINE` ou `NAO_ENCONTRADA` |
 
 A validação é feita com **Zod**.
 
@@ -73,7 +71,6 @@ O status geral é o **pior** resultado entre todos os itens.
 | CPU | acima de 85% | — (picos são momentâneos) |
 | Memória | acima de 90% | — |
 | Sistema de vendas (`.exe`) | `PARADO` (programa fechado: pode ser só o caixa sem uso) | `NAO_ENCONTRADO` (o `.exe` não existe no caminho configurado) |
-| Impressora fiscal | — | `ERRO`, `OFFLINE` ou `NAO_ENCONTRADA` (toda PDV tem impressora: sem ela não imprime a nota) |
 
 Se nenhum item cair em atenção ou crítico, o status é `NORMAL`.
 Os limites ficam centralizados num único arquivo do backend para facilitar ajustes.
@@ -147,7 +144,6 @@ Sem autenticação nesta fase (uso interno da equipe de TI). Login fica como mel
         "cpuUso": 20,
         "memoriaUso": 50,
         "servicoVendas": "NAO_ENCONTRADO",
-        "impressoraFiscal": "OK",
         "status": "CRITICO",
         "motivos": ["Sistema de vendas não encontrado"]
       }

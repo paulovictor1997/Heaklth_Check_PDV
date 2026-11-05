@@ -25,16 +25,6 @@ enum StatusServico {
   @@map("status_servico")
 }
 
-// Situação da impressora fiscal ligada à PDV
-enum StatusImpressora {
-  OK
-  ERRO
-  OFFLINE
-  NAO_ENCONTRADA
-
-  @@map("status_impressora")
-}
-
 // Status geral da máquina no "semáforo" do painel (calculado pelo backend ao receber)
 enum StatusGeral {
   NORMAL
@@ -84,17 +74,16 @@ model Maquina {
 
 // Um registro por envio da PDV
 model HealthCheck {
-  id               Int              @id @default(autoincrement())
-  maquinaId        Int              @map("maquina_id")
-  coletadoEm       DateTime         @map("coletado_em") @db.Timestamptz(3) // horário da PDV
-  recebidoEm       DateTime         @default(now()) @map("recebido_em") @db.Timestamptz(3) // horário do servidor
-  discoTotalGb     Float            @map("disco_total_gb") // só o drive C:
-  discoLivreGb     Float            @map("disco_livre_gb")
-  cpuUso           Float            @map("cpu_uso") // percentual, 0 a 100
-  memoriaUso       Float            @map("memoria_uso") // percentual, 0 a 100
-  servicoVendas    StatusServico    @map("servico_vendas")
-  impressoraFiscal StatusImpressora @map("impressora_fiscal")
-  status           StatusGeral
+  id            Int           @id @default(autoincrement())
+  maquinaId     Int           @map("maquina_id")
+  coletadoEm    DateTime      @map("coletado_em") @db.Timestamptz(3) // horário da PDV
+  recebidoEm    DateTime      @default(now()) @map("recebido_em") @db.Timestamptz(3) // horário do servidor
+  discoTotalGb  Float         @map("disco_total_gb") // só o drive C:
+  discoLivreGb  Float         @map("disco_livre_gb")
+  cpuUso        Float         @map("cpu_uso") // percentual, 0 a 100
+  memoriaUso    Float         @map("memoria_uso") // percentual, 0 a 100
+  servicoVendas StatusServico @map("servico_vendas")
+  status        StatusGeral
 
   maquina Maquina @relation(fields: [maquinaId], references: [id])
 

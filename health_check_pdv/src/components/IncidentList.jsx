@@ -2,7 +2,7 @@ import StatusBadge from "@/components/StatusBadge";
 import { formatDateTime, pluralize } from "@/lib/format";
 
 // Ocorrências do período: trechos em que a máquina ficou em Atenção ou Crítico.
-// Sistema de vendas e impressora não aparecem nos gráficos, então é aqui que se vê
+// O sistema de vendas não aparece nos gráficos, então é aqui que se vê
 // "o sistema fechou às 11:13". `incidents` vem de groupIncidents().
 export default function IncidentList({ incidents }) {
   return (

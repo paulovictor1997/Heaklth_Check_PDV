@@ -39,7 +39,7 @@ Coleção para testar a API simulando o envio das PDVs, antes de existir o scrip
 - Status do servidor e do banco
 
 **2. Envio da PDV** — `POST /api/health-checks`
-- Envio normal, atenção (disco 10%) e crítico (serviço parado + impressora offline), todos na `L001-CX01`
+- Envio normal, atenção (disco 10%) e crítico (sistema de vendas não encontrado), todos na `L001-CX01`
 - Nova máquina `L001-CX02`: é cadastrada sozinha no primeiro envio
 - Erros: dados inválidos (400), hostname de outra loja (403), sem chave (401), JSON malformado (400)
 

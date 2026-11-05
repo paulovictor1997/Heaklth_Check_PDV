@@ -1,7 +1,7 @@
 // Validação (Zod) do corpo enviado pela PDV — contrato, seção 1.
 // Se o JSON não seguir estas regras, a rota responde 400 sem tocar no banco.
 import { z } from "../lib/validation.js";
-import { StatusServico, StatusImpressora } from "../../generated/prisma/index.js";
+import { StatusServico } from "../../generated/prisma/index.js";
 
 // "L001-CX01": grupo 1 = código da loja, grupo 2 = número do caixa
 export const HOSTNAME_REGEX = /^L(\d{3})-CX(\d{2})$/;
@@ -21,9 +21,10 @@ export const healthCheckSchema = z
     discoLivreGb: z.number().min(0),
     cpuUso: z.number().min(0).max(100),
     memoriaUso: z.number().min(0).max(100),
-    // Os valores aceitos vêm dos enums do Prisma: uma única fonte da verdade
+    // Os valores aceitos vêm do enum do Prisma: uma única fonte da verdade
     servicoVendas: z.enum(StatusServico),
-    impressoraFiscal: z.enum(StatusImpressora),
+    // Campos que não estão aqui (ex.: "impressoraFiscal" de scripts antigos) são
+    // descartados pelo Zod, sem erro.
   })
   .refine((data) => data.discoLivreGb <= data.discoTotalGb, {
     path: ["discoLivreGb"],

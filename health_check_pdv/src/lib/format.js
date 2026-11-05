@@ -77,10 +77,3 @@ export const SALES_SERVICE_LABELS = {
   PARADO: "Fechado",
   NAO_ENCONTRADO: "Não encontrado",
 };
-
-export const PRINTER_LABELS = {
-  OK: "OK",
-  ERRO: "Erro",
-  OFFLINE: "Offline",
-  NAO_ENCONTRADA: "Não encontrada",
-};

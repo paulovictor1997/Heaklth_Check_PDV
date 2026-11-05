@@ -103,7 +103,7 @@ function Read-Config {
         throw "config.json inválido (JSON mal formado): $($_.Exception.Message)"
     }
 
-    $requiredFields = @("urlApi", "chaveApi", "caminhoSistemaVendas", "padroesImpressora", "timeoutSegundos")
+    $requiredFields = @("urlApi", "chaveApi", "caminhoSistemaVendas", "timeoutSegundos")
     $missingFields = @($requiredFields | Where-Object { -not $config.PSObject.Properties[$_] -or -not $config.$_ })
     if ($missingFields.Count -gt 0) {
         throw "config.json sem os campos: $($missingFields -join ', ')"
@@ -128,11 +128,6 @@ function Read-Config {
         throw "caminhoSistemaVendas deve apontar para o .exe do sistema de vendas (ex.: C:\SETA\sistema.exe)"
     }
 
-    # Vira lista mesmo que o JSON traga um texto só
-    $config.padroesImpressora = @($config.padroesImpressora | Where-Object { $_ })
-    if ($config.padroesImpressora.Count -eq 0) {
-        throw "padroesImpressora precisa de pelo menos um padrão de nome (ex.: *TM-T20*)"
-    }
 
     $timeout = 0
     if (-not [int]::TryParse([string]$config.timeoutSegundos, [ref]$timeout) -or $timeout -lt 1 -or $timeout -gt 120) {
@@ -252,54 +247,6 @@ function Get-SalesSystemStatus {
     return "PARADO"
 }
 
-# Situação de uma impressora do Windows (Win32_Printer):
-#   WorkOffline / PrinterStatus 7 / DetectedErrorState 9 = OFFLINE
-#   PrinterStatus 6 (parou de imprimir) ou erros de hardware = ERRO
-#   Pouco papel (DetectedErrorState 3) ainda imprime, então conta como OK
-function Get-SinglePrinterStatus {
-    param([Parameter(Mandatory)] $Printer)
-
-    if ($Printer.WorkOffline -or $Printer.PrinterStatus -eq 7 -or $Printer.DetectedErrorState -eq 9) {
-        return "OFFLINE"
-    }
-
-    # 4 sem papel, 6 sem toner, 7 tampa aberta, 8 papel enroscado, 10 precisa de manutenção, 11 bandeja cheia
-    $hardwareErrors = @(4, 6, 7, 8, 10, 11)
-    if ($Printer.PrinterStatus -eq 6 -or $hardwareErrors -contains $Printer.DetectedErrorState) {
-        return "ERRO"
-    }
-
-    return "OK"
-}
-
-# Situação da impressora fiscal: procura as impressoras cujo nome bate com algum padrão
-# do config (ex.: *TM-T20*). Se houver mais de uma, vale a melhor situação, porque o
-# Windows às vezes mantém cópias antigas da mesma impressora que ficam sempre offline.
-function Get-FiscalPrinterStatus {
-    param([Parameter(Mandatory)] [string[]]$NamePatterns)
-
-    $printers = @(Get-CimInstance -ClassName Win32_Printer | Where-Object {
-        $printerName = $_.Name
-        @($NamePatterns | Where-Object { $printerName -like $_ }).Count -gt 0
-    })
-
-    if ($printers.Count -eq 0) {
-        return "NAO_ENCONTRADA"
-    }
-
-    $statuses = @($printers | ForEach-Object {
-        $status = Get-SinglePrinterStatus -Printer $_
-        Write-Log "Impressora '$($_.Name)': $status (PrinterStatus=$($_.PrinterStatus), DetectedErrorState=$($_.DetectedErrorState), WorkOffline=$($_.WorkOffline))"
-        $status
-    })
-
-    foreach ($best in @("OK", "ERRO", "OFFLINE")) {
-        if ($statuses -contains $best) {
-            return $best
-        }
-    }
-}
-
 # Monta o corpo do envio no formato do contrato (seção 1)
 function Get-HealthCheckData {
     param(
@@ -313,14 +260,13 @@ function Get-HealthCheckData {
     $collectedAt = (Get-Date).ToString("yyyy-MM-dd'T'HH:mm:sszzz", [Globalization.CultureInfo]::InvariantCulture)
 
     $data = [ordered]@{
-        hostname         = $MachineName
-        coletadoEm       = $collectedAt
-        discoTotalGb     = $disk.totalGb
-        discoLivreGb     = $disk.freeGb
-        cpuUso           = Get-CpuUsage
-        memoriaUso       = Get-MemoryUsage
-        servicoVendas    = Get-SalesSystemStatus -ExePath $Config.caminhoSistemaVendas
-        impressoraFiscal = Get-FiscalPrinterStatus -NamePatterns $Config.padroesImpressora
+        hostname      = $MachineName
+        coletadoEm    = $collectedAt
+        discoTotalGb  = $disk.totalGb
+        discoLivreGb  = $disk.freeGb
+        cpuUso        = Get-CpuUsage
+        memoriaUso    = Get-MemoryUsage
+        servicoVendas = Get-SalesSystemStatus -ExePath $Config.caminhoSistemaVendas
     }
 
     $ip = Get-MachineIp
@@ -379,8 +325,8 @@ try {
     $machineName = Resolve-MachineName -Override $Hostname
 
     $data = Get-HealthCheckData -MachineName $machineName -Config $config
-    Write-Log ("Coletado: disco C: {0} de {1} GB livres, CPU {2}%, memória {3}%, sistema de vendas {4}, impressora {5}, IP {6}" -f `
-        $data.discoLivreGb, $data.discoTotalGb, $data.cpuUso, $data.memoriaUso, $data.servicoVendas, $data.impressoraFiscal, $(if ($data.Contains("ip")) { $data.ip } else { "-" }))
+    Write-Log ("Coletado: disco C: {0} de {1} GB livres, CPU {2}%, memória {3}%, sistema de vendas {4}, IP {5}" -f `
+        $data.discoLivreGb, $data.discoTotalGb, $data.cpuUso, $data.memoriaUso, $data.servicoVendas, $(if ($data.Contains("ip")) { $data.ip } else { "-" }))
 
     $result = Send-HealthCheck -Data $data -Config $config
     $reasons = @($result.motivos)

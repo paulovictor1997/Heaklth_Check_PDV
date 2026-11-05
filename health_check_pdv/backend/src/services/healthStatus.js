@@ -13,12 +13,6 @@ const SALES_SERVICE_TEXT = {
   NAO_ENCONTRADO: "não encontrado",
 };
 
-const PRINTER_TEXT = {
-  ERRO: "com erro",
-  OFFLINE: "offline",
-  NAO_ENCONTRADA: "não encontrada",
-};
-
 // 12.3456 → "12,3"
 function formatPercent(value) {
   return value.toLocaleString("pt-BR", { maximumFractionDigits: 1 });
@@ -53,14 +47,6 @@ export function computeHealthStatus(data) {
     });
   }
 
-  // Toda PDV tem impressora fiscal: sem ela não sai a nota
-  if (data.impressoraFiscal !== "OK") {
-    findings.push({
-      status: StatusGeral.CRITICO,
-      reason: `Impressora fiscal ${PRINTER_TEXT[data.impressoraFiscal]}`,
-    });
-  }
-
   const worstIndex = Math.max(0, ...findings.map((finding) => SEVERITY.indexOf(finding.status)));
 
   return {
@@ -81,7 +67,6 @@ export function describeHealthCheck(record) {
     cpuUso: record.cpuUso,
     memoriaUso: record.memoriaUso,
     servicoVendas: record.servicoVendas,
-    impressoraFiscal: record.impressoraFiscal,
     status: record.status,
     motivos: computeHealthStatus(record).reasons,
   };
